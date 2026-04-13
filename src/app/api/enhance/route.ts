@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API Configuration Error' }, { status: 500 });
     }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     const geminiResponse = await fetch(apiUrl, {
       method: 'POST',
@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
     if (!geminiResponse.ok) {
       const errorData = await geminiResponse.json();
       console.error('Gemini API Error:', errorData);
-      return NextResponse.json({ error: 'Failed to enhance image with Gemini API' }, { status: 500 });
+      const specificErrorMessage = errorData?.error?.message || 'Failed to enhance image with Gemini API';
+      return NextResponse.json({ error: specificErrorMessage }, { status: 500 });
     }
 
     const data = await geminiResponse.json();
